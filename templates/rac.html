@@ -1,0 +1,240 @@
+<!--
+	Remote Access Center (RAC). A free and easy way to manage your devices from around the world.
+	Copyright (C) 2024 TMLabs
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAC</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.13/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link
+        rel="stylesheet"
+        href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css"
+      >
+    <link rel="stylesheet" href="/static/main.css">
+</head>
+<body class="bg-base">
+<div class="navbar bg-base-100">
+  <div class="navbar-start">
+    <div class="dropdown">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+      </div>
+      <ul
+        tabindex="0"
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+        <li><a id="live-feed-btn">Live Feed</a></li>
+        <li><a id="terminal-btn">Terminal</a></li>
+        <li><a onclick="action_shutdown()">Shutdown</a></li>
+        <li><a onclick="action_restart()">Restart</a></li>
+        <li><a onclick="action_lock()">Lock</a></li>
+        <li><a onclick="action_screenshot()">Take Screenshot</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="navbar-center">
+    <a class="btn btn-ghost text-xl">RAC Panel</a>
+  </div>
+  <div class="navbar-end">
+    <button class="btn btn-ghost btn-circle">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </button>
+    <button class="btn btn-ghost btn-circle">
+      <div class="indicator">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        <span class="badge badge-xs badge-primary indicator-item"></span>
+      </div>
+    </button>
+  </div>
+</div>
+    <div class="flex h-screen">
+        <main class="flex-1 flex flex-col">
+    
+            <section class="p-6 bg-base-200">
+            <div class="stats w-full">
+  <div class="stat w-full">
+    <div class="stat-title text-2xl"><i class="fa-solid fa-circle-xmark"></i></div>
+    <div class="stat-value">Shutdown</div>
+    <div class="stat-actions">
+      <button onclick="action_shutdown()" class="btn btn-sm btn-light"><i class="fa-solid fa-terminal"></i> Execute</button>
+    </div>
+  </div>
+
+   <div class="stat w-full">
+    <div class="stat-title text-2xl"><i class="fa-solid fa-redo"></i></div>
+    <div class="stat-value">Restart</div>
+    <div class="stat-actions">
+      <button onclick="action_restart()" class="btn btn-sm btn-light"><i class="fa-solid fa-terminal"></i> Execute</button>
+    </div>
+  </div>
+ <div class="stat w-full">
+    <div class="stat-title text-2xl"><i class="fa-solid fa-lock"></i></div>
+    <div class="stat-value">Lock</div>
+    <div class="stat-actions">
+      <button onclick="action_lock()" class="btn btn-sm btn-light"><i class="fa-solid fa-terminal"></i> Execute</button>
+    </div>
+  </div>
+   <div class="stat w-full">
+    <div class="stat-title text-2xl"><i class="fa-solid fa-camera"></i></div>
+    <div class="stat-value">Screenshot</div>
+    <div class="stat-actions">
+      <button onclick="action_screenshot()" class="btn btn-sm btn-light"><i class="fa-solid fa-terminal"></i> Execute</button>
+    </div>
+  </div>
+</div>
+
+            </section>
+            <div id="alert-box" class="hidden fixed top-4 right-4 z-50 p-4 bg-green-500 text-white rounded shadow-lg">
+            </div>
+           
+            <div id="live-feed-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-base-200 p-6 rounded-lg w-11/12 md:w-3/4 lg:w-2/3 relative">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-white" id="close-live-feed-modal">
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-4">Live Desktop Feed</h2>
+                    <div class="bg-base-100 p-4 rounded">
+                        <img id="live-video" class="w-full h-auto" src="/video_feed" alt="Live Desktop Feed">
+                    </div>
+                </div>
+            </div>
+            <div id="terminal-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-base-200 p-6 rounded-lg w-11/12 md:w-2/3 relative">
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-white" id="close-terminal-modal">
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-4">Terminal</h2>
+                    <div class="bg-black p-4 rounded text-white">
+                        <pre id="terminal-output" class="h-48 overflow-y-auto mb-4"></pre>
+                        <div class="join w-full">
+                            <input id="terminal-input" type="text" class="input join-item w-full" placeholder="echo Hello World" />
+                            <button id="run-command" class="btn btn-light join-item"><i class="fa-solid fa-terminal"></i> Run</button>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 overflow-auto p-6">
+                <h1 class="text-3xl font-bold mb-6">Welcome to Remote Access Control</h1>
+                <p class="text-gray-400">Use the sidebar or the action cards above to manage your remote systems.</p>
+            </div>
+        </main>
+    </div>
+    <script>
+        function showAlert(message, color) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.innerText = message;
+            alertBox.className = `fixed top-4 right-4 z-50 p-4 rounded shadow-lg bg-${color}-500 text-white`;
+            alertBox.classList.remove('hidden');
+            setTimeout(() => alertBox.classList.add('hidden'), 3000);
+        }
+        const liveFeedModal = document.getElementById('live-feed-modal');
+        const terminalModal = document.getElementById('terminal-modal');
+        document.getElementById('live-feed-btn').addEventListener('click', () => liveFeedModal.classList.remove('hidden'));
+        document.getElementById('terminal-btn').addEventListener('click', () => terminalModal.classList.remove('hidden'));
+        document.getElementById('close-live-feed-modal').addEventListener('click', () => liveFeedModal.classList.add('hidden'));
+        document.getElementById('close-terminal-modal').addEventListener('click', () => terminalModal.classList.add('hidden'));
+
+
+
+        function action_shutdown() {
+            fetch('/shutdown', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => showAlert('Success: ' + data, 'green'));
+        }
+
+        function action_restart() {
+            fetch('/restart', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => showAlert('Success: ' + data, 'yellow'));
+        }
+
+        function action_lock() {
+            fetch('/lock', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => showAlert('Success: ' + data, 'blue'));
+        }
+
+        function action_screenshot() {
+            fetch('/screenshot', { method: 'POST' })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    showAlert('Screenshot taken', 'green');
+                    window.open(url)
+                });
+        }
+
+        document.getElementById('run-command').addEventListener('click', () => {
+            const command = document.getElementById('terminal-input').value;
+            fetch('/run-command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command })
+            })
+                .then(response => response.text())
+                .then(output => {
+                    const terminalOutput = document.getElementById('terminal-output');
+                    terminalOutput.innerText += `> ${command}\n${output}\n`;
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    document.getElementById('terminal-input').value = '';
+                });
+        });
+
+        document.getElementById('terminal-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('run-command').click();
+            }
+        });
+    </script>
+</body>
+</html>
