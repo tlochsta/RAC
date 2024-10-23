@@ -9,6 +9,15 @@ from PIL import ImageGrab
 
 app = Flask(__name__)
 
+
+# RAC Configuration
+
+port = 5000
+debugMode = True
+webhost = '0.0.0.0'
+
+# End RAC Configuration
+
 @app.route('/')
 def home():
     return render_template('rac.html')
@@ -52,32 +61,19 @@ def run_command():
         return output
     except subprocess.CalledProcessError as e:
         return str(e.output)
-
-# Route to stream the live desktop feed
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_live_feed(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def generate_live_feed():
     while True:
-        # Capture the screen using PyAutoGUI
         screenshot = pyautogui.screenshot()
-
-        # Convert the screenshot to a NumPy array
         frame = np.array(screenshot)
-
-        # Convert RGB to BGR for OpenCV
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-        # Encode the frame in JPEG format
         ret, buffer = cv2.imencode('.jpg', frame)
-
-        # Convert the JPEG buffer into bytes and yield it
         frame = buffer.tobytes()
-
-        # Yield the frame with the correct boundary for streaming
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host=webhost, port=port, debug=debugMode)
