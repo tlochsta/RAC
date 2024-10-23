@@ -1,0 +1,7 @@
+.hidden {
+    display: none;
+}
+
+#live-feed, #terminal {
+    transition: all 0.3s ease;
+}
